@@ -1,1 +1,1 @@
-__all__ = ['simplurapi']
+__all__ = ['SimPlurAPI']
