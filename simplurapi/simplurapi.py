@@ -2,16 +2,26 @@ __all__ = ['SimPlurAPI']
 __version__ = '0.1.0'
 
 
+import os
+from dotenv import load_dotenv
+
+
 class SimPlurAPI:
-    _apiUrlHttp:str = "https://api.apparyllis.com/v#/"
-    _apiUrlSocket:str = "wss://api.apparyllis.com/v#/socket"
-    _apiVersion:int = 1
+    _apiUrlHttp:str
+    _apiUrlHttpDefault:str = "https://api.apparyllis.com/v#/"
+    _apiUrlSocket:str
+    _apiUrlSocketDefault:str = "wss://api.apparyllis.com/v#/socket"
+    _apiVersion:int
+    _apiVersionDefault:int = 1
     _authToken:str
     _userId:str
 
-    _devApiUrlHttp:str = "https://devapi.apparyllis.com/v#/"
-    _devApiUrlSocket:str = "wss://devapi.apparyllis.com/v#/socket"
-    _devApiVersion:int = 1
+    _devApiUrlHttp:str
+    _devApiUrlHttpDefault:str = "https://devapi.apparyllis.com/v#/"
+    _devApiUrlSocket:str
+    _devApiUrlSocketDefault:str = "wss://devapi.apparyllis.com/v#/socket"
+    _devApiVersion:int
+    _devApiVersionDefault:int = 1
     _devAuthToken:str
     _devUserId:str
 
@@ -21,6 +31,7 @@ class SimPlurAPI:
 
 
     def __init__( self ):
+        self._load_env_values()
         raise NotImplemented
 
 
@@ -344,3 +355,20 @@ class SimPlurAPI:
 
     def delete_report( self, reportId:str ):
         raise NotImplemented
+
+
+    def _load_env_values( self ):
+        try:
+            load_dotenv()
+        except Exception:
+            raise NotImplemented
+        self._apiUrlHttp = os.getenv( 'api_url_http', self._apiUrlHttpDefault )
+        self._apiUrlSocket = os.getenv( 'api_url_socket', self._apiUrlSocketDefault )
+        self._apiVersion = os.getenv( 'api_version', self._apiVersionDefault )
+        self._authToken = os.getenv( 'auth_token' )
+        self._userId = os.getenv( 'user_id' )
+        self._devApiUrlHttp = os.getenv( 'dev_api_url_http', self._devApiUrlHttpDefault )
+        self._devApiUrlSocket = os.getenv( 'dev_api_url_socket', self._devApiUrlSocketDefault )
+        self._devApiVersion = os.getenv( 'dev_api_version', self._devApiVersionDefault )
+        self._devAuthToken = os.getenv( 'dev_auth_token' )
+        self._devUserId = os.getenv( 'dev_user_id' )
