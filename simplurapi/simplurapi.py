@@ -1,9 +1,14 @@
 __all__ = ['SimPlurAPI']
 __version__ = '0.1.0'
+__author__ = 'SparkliTwizzl'
 
 
+import logging
 import os
 from dotenv import load_dotenv
+
+
+_moduleName:str = 'SimPlurAPI'
 
 
 class SimPlurAPI:
@@ -26,43 +31,53 @@ class SimPlurAPI:
     _devUserId:str
 
     _isSocketConnectionAlive:bool = False
+    _logger:logging
     _useDevelopmentMode:bool = True
     _useSocketConnection:bool = False
 
 
     def __init__( self ):
+        self._logger = logging.getLogger( __name__ )
         self._load_env_values()
-        raise NotImplemented
 
 
     def use_development_mode( self ):
+        self._logger.info( 'Set %s to development mode.' % _moduleName )
         self._useDevelopmentMode = True
+        if self._devUserId is None or self._devUserId == '':
+            raise ValueError( 'Dev user ID cannot be blank.' )
+        if self._devAuthToken is None or self._devAuthToken == '':
+            raise ValueError( 'Dev auth token cannot be blank.' )
         raise NotImplemented
 
     def use_production_mode( self ):
+        self._logger.info( 'Set %s to production mode.' % _moduleName )
         self._useDevelopmentMode = False
-        raise NotImplemented
+        if self._userId is None or self._userId == '':
+            raise ValueError( 'User ID cannot be blank.' )
+        if self._authToken is None or self._authToken == '':
+            raise ValueError( 'Auth token cannot be blank.' )
 
     def use_http_connection( self ):
+        self._logger.info( 'Set %s connection mode to HTTP.' % _moduleName )
         self._useSocketConnection = False
-        raise NotImplemented
 
     def use_socket_connection( self ):
+        self._logger.info( 'Set %s connection mode to WebSocket.' % _moduleName )
         self._useSocketConnection = True
-        raise NotImplemented
 
     def open_socket_connection( self ):
         if not self._useSocketConnection:
-            raise ConnectionError( 'Socket connection is not enabled.' )
+            raise ConnectionError( 'WebSocket connection is not enabled.' )
         if self._isSocketConnectionAlive:
-            raise ConnectionRefusedError( 'Socket connection is already open.' )
+            raise ConnectionRefusedError( 'WebSocket connection is already open.' )
         raise NotImplemented
 
     def close_socket_connection( self ):
         if not self._useSocketConnection:
-            raise ConnectionError( 'Socket connection is not enabled.' )
+            raise ConnectionError( 'WebSocket connection is not enabled.' )
         if not self._isSocketConnectionAlive:
-            raise ConnectionResetError( 'Socket connection is not open.' )
+            raise ConnectionResetError( 'WebSocket connection is not open.' )
         raise NotImplemented
 
 
@@ -361,12 +376,14 @@ class SimPlurAPI:
         try:
             load_dotenv()
         except Exception:
-            raise NotImplemented
+            raise FileNotFoundError( '.env file was not found.' )
+
         self._apiUrlHttp = os.getenv( 'api_url_http', self._apiUrlHttpDefault )
         self._apiUrlSocket = os.getenv( 'api_url_socket', self._apiUrlSocketDefault )
         self._apiVersion = os.getenv( 'api_version', self._apiVersionDefault )
         self._authToken = os.getenv( 'auth_token' )
         self._userId = os.getenv( 'user_id' )
+
         self._devApiUrlHttp = os.getenv( 'dev_api_url_http', self._devApiUrlHttpDefault )
         self._devApiUrlSocket = os.getenv( 'dev_api_url_socket', self._devApiUrlSocketDefault )
         self._devApiVersion = os.getenv( 'dev_api_version', self._devApiVersionDefault )
