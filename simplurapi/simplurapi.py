@@ -15,8 +15,10 @@ _moduleName:str = 'SimPlurAPI'
 
 
 class _APIkeywords:
-    _userRequest:str = 'user'
-    _analyticsRequest:str = 'analytics'
+    _SUBTYPE_ANALYTICS:Final[str] = 'analytics'
+    _SUBTYPE_AUTOMATED:Final[str] = 'automated'
+    _TYPE_TIMERS:Final[str] = 'timers'
+    _TYPE_USER:Final[str] = 'user'
 
 
 class SimPlurAPI:
@@ -68,12 +70,12 @@ class SimPlurAPI:
 
     config:Config
 
-    _API_URL_HTTP_DEFAULT:Final[ str ] = "https://api.apparyllis.com/v#/"
-    _API_URL_SOCKET_DEFAULT:Final[ str ] = "wss://api.apparyllis.com/v#/socket"
-    _API_VERSION_DEFAULT:Final[ int ] = 1
-    _DEV_API_URL_HTTP_DEFAULT:Final[ str ] = "https://devapi.apparyllis.com/v#/"
-    _DEV_API_URL_SOCKET_DEFAULT:Final[ str ] = "wss://devapi.apparyllis.com/v#/socket"
-    _DEV_API_VERSION_DEFAULT:Final[ int ] = 1
+    _API_URL_HTTP_DEFAULT:Final[str] = "https://api.apparyllis.com/v#/"
+    _API_URL_SOCKET_DEFAULT:Final[str] = "wss://api.apparyllis.com/v#/socket"
+    _API_VERSION_DEFAULT:Final[int] = 1
+    _DEV_API_URL_HTTP_DEFAULT:Final[str] = "https://devapi.apparyllis.com/v#/"
+    _DEV_API_URL_SOCKET_DEFAULT:Final[str] = "wss://devapi.apparyllis.com/v#/socket"
+    _DEV_API_VERSION_DEFAULT:Final[int] = 1
 
     _apiUrlHttp:str
     _apiUrlSocket:str
@@ -108,6 +110,11 @@ class SimPlurAPI:
             return self._devApiUrlSocket.replace( '#', self._devApiVersion )
         return self._apiUrlSocket.replace( '#', self._apiVersion )
 
+    def auth_token( self ):
+        if self.config.is_in_development_mode():
+            return self._devAuthToken
+        return self._authToken
+
     def close_socket_connection( self ):
         if not self.config.is_using_socket_connection:
             raise ConnectionError( 'WebSocket connection is not enabled.' )
@@ -124,12 +131,17 @@ class SimPlurAPI:
         #TODO
         raise NotImplemented
 
+    def user_id( self ):
+        if self.config.is_in_development_mode():
+            return self._devUserId
+        return self._userId
+
 
     # public API methods
     def get_analytics( self ):
-        type = _APIkeywords._userRequest
-        subtype = _APIkeywords._analyticsRequest
-        response = self._send_http_get_request( requestType=type, requestSubtype=subtype )
+        response = self._send_http_get_request(
+            type=_APIkeywords._TYPE_USER,
+            subtype=_APIkeywords._SUBTYPE_ANALYTICS )
         return response
 
 
@@ -137,9 +149,15 @@ class SimPlurAPI:
         #TODO
         raise NotImplemented
 
-    def get_all_automated_timers( self, systemId:str ):
-        #TODO
-        raise NotImplemented
+    def get_all_automated_timers_for_system( self, systemId:str ):
+        response = self._send_http_get_request(
+            type=_APIkeywords._TYPE_TIMERS,
+            subtype=_APIkeywords._SUBTYPE_AUTOMATED,
+            arg=systemId )
+        return response
+
+    def get_all_automated_timers_for_self( self ):
+        return self.get_all_automated_timers_for_system( self.user_id() )
 
     def add_automated_timer( self, timerId:str, name:str, message:str, type:int, delayInHours:int ):
         #TODO
@@ -533,9 +551,11 @@ class SimPlurAPI:
         request = response.request
         method = request.method
         url = request.url
+        url = url.replace( self.auth_token(), '_AUTH_TOKEN_' )
+        url = url.replace( self.user_id(), '_USER_ID_' )
         statusCode = response.status_code
         reason = response.reason
-        elapsed = response.elapsed.total_seconds
+        elapsed = response.elapsed.total_seconds()
         self._logger.info( '%s %s returned %d (%s) in %f seconds' % ( method, url, statusCode, reason, elapsed ) )
 
     def _request_headers_http( self ):
@@ -545,30 +565,30 @@ class SimPlurAPI:
             'Authorization': authToken
         }
 
-    def _request_url_http( self, requestType:str, requestSubtype:str='', requestArg:str='' ):
+    def _request_url_http( self, type:str, subtype:str='', arg:str='' ):
         base = self.api_url_http()
-        url = os.path.join( base, requestType, requestSubtype, requestArg ).replace( '\\', '/' )
+        url = os.path.join( base, type, subtype, arg ).replace( '\\', '/' )
         if url.endswith( '/' ): # request URLs cannot have a trailing slash
             url = url[ slice( -1 ) ]
         return url
 
-    def _send_http_get_request( self, requestType:str, requestSubtype:str = '', requestArg:str = '', params:dict = {}, body:dict = {} ):
-        return self._send_http_request( 'GET', requestType, requestSubtype, requestArg, params, body )
+    def _send_http_get_request( self, type:str, subtype:str = '', arg:str = '', params:dict = {}, body:dict = {} ):
+        return self._send_http_request( 'GET', type, subtype, arg, params, body )
 
-    def _send_http_patch_request( self, requestType:str, requestSubtype:str = '', requestArg:str = '', params:dict = {}, body:dict = {} ):
-        return self._send_http_request( 'PATCH', requestType, requestSubtype, requestArg, params, body )
+    def _send_http_patch_request( self, type:str, subtype:str = '', arg:str = '', params:dict = {}, body:dict = {} ):
+        return self._send_http_request( 'PATCH', type, subtype, arg, params, body )
 
-    def _send_http_post_request( self, requestType:str, requestSubtype:str = '', requestArg:str = '', params:dict = {}, body:dict = {} ):
-        return self._send_http_request( 'POST', requestType, requestSubtype, requestArg, params, body )
+    def _send_http_post_request( self, type:str, subtype:str = '', arg:str = '', params:dict = {}, body:dict = {} ):
+        return self._send_http_request( 'POST', type, subtype, arg, params, body )
 
-    def _send_http_delete_request( self, requestType:str, requestSubtype:str = '', requestArg:str = '', params:dict = {}, body:dict = {} ):
-        return self._send_http_request( 'DEL', requestType, requestSubtype, requestArg, params, body )
+    def _send_http_delete_request( self, type:str, subtype:str = '', arg:str = '', params:dict = {}, body:dict = {} ):
+        return self._send_http_request( 'DEL', type, subtype, arg, params, body )
 
-    def _send_http_request( self, requestMethod:str, requestType:str, requestSubtype:str, requestArg:str, params:dict, body:dict ):
-        url = self._request_url_http( requestType, requestSubtype, requestArg )
+    def _send_http_request( self, method:str, type:str, subtype:str, arg:str, params:dict, body:dict ):
+        url = self._request_url_http( type, subtype, arg )
         headers = self._request_headers_http()
         response = self._requests.request(
-            method=requestMethod,
+            method=method,
             url=url,
             headers=headers,
             params=params,
