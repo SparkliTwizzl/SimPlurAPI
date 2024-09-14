@@ -13,6 +13,11 @@ from dotenv import load_dotenv
 _moduleName:str = 'SimPlurAPI'
 
 
+class _APIkeywords:
+    _userRequest:str = 'user'
+    _analyticsRequest:str = 'analytics'
+
+
 class SimPlurAPI:
     _apiUrlHttp:str
     _apiUrlHttpDefault:str = "https://api.apparyllis.com/v#/"
@@ -100,8 +105,13 @@ class SimPlurAPI:
 
     # public API methods
     def get_analytics( self ):
-        #TODO
-        raise NotImplemented
+        return self.get_analytics_raw().json()
+
+    def get_analytics_raw( self ):
+        type = _APIkeywords._userRequest
+        subtype = _APIkeywords._analyticsRequest
+        response = self._send_http_get_request( requestType=type, requestSubtype=subtype )
+        return response
 
 
     def get_automated_timer( self, timerId:str ):
