@@ -1,7 +1,4 @@
-_MODULE_NAME:Final[str] = 'SimPlurAPI'
-
-
-__all__ = [_MODULE_NAME]
+__all__ = ['SimPlurAPI']
 __version__ = '0.1.0'
 __author__ = 'SparkliTwizzl'
 
@@ -12,6 +9,9 @@ import os
 import requests
 from dotenv import load_dotenv
 from typing import Final
+
+
+_MODULE_NAME:Final[str] = 'SimPlurAPI'
 
 
 class _APIkeywords:
@@ -568,7 +568,6 @@ class SimPlurAPI:
             raise NotImplemented
 
 
-    config:Config
     analytics:Analytics
     automatedTimers:AutomatedTimers
     boardMessages:BoardMessages
@@ -576,6 +575,7 @@ class SimPlurAPI:
     chatCategories:ChatCategories
     chatChannels:ChatChannels
     comments:Comments
+    config:Config
     customFronts:CustomFronts
     friends:Friends
     frontHistory:FrontHistory
@@ -609,11 +609,10 @@ class SimPlurAPI:
     _userId:str
 
 
-    def __init__( self, requestProvider = requests ):
+    def __init__( self, requestProvider=requests ):
         self._logger = logging.getLogger( __name__ )
         self._load_env_values()
         self._requests = requestProvider
-        self.config = SimPlurAPI.Config( self )
         self.analytics = SimPlurAPI.Analytics( self )
         self.automatedTimers = SimPlurAPI.AutomatedTimers( self )
         self.boardMessages = SimPlurAPI.BoardMessages( self )
@@ -621,6 +620,7 @@ class SimPlurAPI:
         self.chatCategories = SimPlurAPI.ChatCategories( self )
         self.chatChannels = SimPlurAPI.ChatChannels( self )
         self.comments = SimPlurAPI.Comments( self )
+        self.config = SimPlurAPI.Config( self )
         self.customFronts = SimPlurAPI.CustomFronts( self )
         self.friends = SimPlurAPI.Friends( self )
         self.frontHistory = SimPlurAPI.FrontHistory( self )
