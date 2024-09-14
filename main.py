@@ -7,8 +7,8 @@ from simplurapi import simplurapi
 if __name__ == "__main__":
     logDir = 'test/log'
     os.makedirs( logDir, exist_ok=True )
-    timestamp = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-    logFile = f'{logDir}/{timestamp}.log'
+    timestamp = datetime.datetime.now().strftime( '%Y-%m-%d_%H-%M-%S' )
+    logFile = f'{ logDir }/{ timestamp }.log'
     logging.basicConfig(
         level=logging.DEBUG,
         format='%(asctime)s.%(msecs)03d - %(name)30s - %(levelname)8s - %(message)s',
