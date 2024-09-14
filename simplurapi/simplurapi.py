@@ -3,7 +3,7 @@ __version__ = '0.1.0'
 __author__ = 'SparkliTwizzl'
 
 
-import datetime
+import json
 import logging
 import os
 import requests
@@ -19,6 +19,54 @@ class _APIkeywords:
 
 
 class SimPlurAPI:
+    class Config:
+        _useDevelopmentMode:bool = True
+        _useSocketConnection:bool = False
+
+
+        def __init__( self, outer_instance ):
+            self.outer = outer_instance
+
+
+        def is_in_development_mode( self ):
+            return self._useDevelopmentMode
+
+        def is_in_production_mode( self ):
+            return not self._useDevelopmentMode
+
+        def is_using_http_connection( self ):
+            return not self._useSocketConnection
+
+        def is_using_socket_connection( self ):
+            return self._useSocketConnection
+
+        def set_to_development_mode( self ):
+            self.outer._logger.info( 'Set %s to development mode.' % _moduleName )
+            self._useDevelopmentMode = True
+            if self.outer._devUserId is None or self.outer._devUserId == '':
+                raise ValueError( 'Dev user ID cannot be blank.' )
+            if self.outer._devAuthToken is None or self.outer._devAuthToken == '':
+                raise ValueError( 'Dev auth token cannot be blank.' )
+
+        def set_to_production_mode( self ):
+            self.outer._logger.info( 'Set %s to production mode.' % _moduleName )
+            self._useDevelopmentMode = False
+            if self.outer._userId is None or self.outer._userId == '':
+                raise ValueError( 'User ID cannot be blank.' )
+            if self.outer._authToken is None or self.outer._authToken == '':
+                raise ValueError( 'Auth token cannot be blank.' )
+
+        def set_connection_to_http( self ):
+            self.outer._logger.info( 'Set %s connection mode to HTTP.' % _moduleName )
+            self._useSocketConnection = False
+
+        def set_connection_to_socket( self ):
+            self.outer._logger.info( 'Set %s connection mode to WebSocket.' % _moduleName )
+            self._useSocketConnection = True
+
+
+    config:Config
+
     _apiUrlHttp:str
     _apiUrlHttpDefault:str = "https://api.apparyllis.com/v#/"
     _apiUrlSocket:str
@@ -38,8 +86,6 @@ class SimPlurAPI:
     _devUserId:str
 
     _isSocketConnectionAlive:bool = False
-    _useDevelopmentMode:bool = True
-    _useSocketConnection:bool = False
 
     _logger:logging
     _requests:requests
@@ -49,21 +95,22 @@ class SimPlurAPI:
         self._logger = logging.getLogger( __name__ )
         self._load_env_values()
         self._requests = requestProvider
+        self.config = SimPlurAPI.Config( self )
 
 
     # public non-API methods
     def api_url_http( self ):
-        if self._useDevelopmentMode:
+        if self.config.is_in_development_mode():
             return self._devApiUrlHttp.replace( '#', self._devApiVersion )
         return self._apiUrlHttp.replace( '#', self._apiVersion )
 
     def api_url_socket( self ):
-        if self._useDevelopmentMode:
+        if self.config.is_in_development_mode():
             return self._devApiUrlSocket.replace( '#', self._devApiVersion )
         return self._apiUrlSocket.replace( '#', self._apiVersion )
 
     def close_socket_connection( self ):
-        if not self._useSocketConnection:
+        if not self.config.is_using_socket_connection:
             raise ConnectionError( 'WebSocket connection is not enabled.' )
         if not self._isSocketConnectionAlive:
             raise ConnectionResetError( 'WebSocket connection is not open.' )
@@ -71,43 +118,16 @@ class SimPlurAPI:
         raise NotImplemented
 
     def open_socket_connection( self ):
-        if not self._useSocketConnection:
+        if not self.config.is_using_socket_connection:
             raise ConnectionError( 'WebSocket connection is not enabled.' )
         if self._isSocketConnectionAlive:
             raise ConnectionRefusedError( 'WebSocket connection is already open.' )
         #TODO
         raise NotImplemented
 
-    def use_development_mode( self ):
-        self._logger.info( 'Set %s to development mode.' % _moduleName )
-        self._useDevelopmentMode = True
-        if self._devUserId is None or self._devUserId == '':
-            raise ValueError( 'Dev user ID cannot be blank.' )
-        if self._devAuthToken is None or self._devAuthToken == '':
-            raise ValueError( 'Dev auth token cannot be blank.' )
-
-    def use_http_connection( self ):
-        self._logger.info( 'Set %s connection mode to HTTP.' % _moduleName )
-        self._useSocketConnection = False
-
-    def use_production_mode( self ):
-        self._logger.info( 'Set %s to production mode.' % _moduleName )
-        self._useDevelopmentMode = False
-        if self._userId is None or self._userId == '':
-            raise ValueError( 'User ID cannot be blank.' )
-        if self._authToken is None or self._authToken == '':
-            raise ValueError( 'Auth token cannot be blank.' )
-
-    def use_socket_connection( self ):
-        self._logger.info( 'Set %s connection mode to WebSocket.' % _moduleName )
-        self._useSocketConnection = True
-
 
     # public API methods
     def get_analytics( self ):
-        return self.get_analytics_raw().json()
-
-    def get_analytics_raw( self ):
         type = _APIkeywords._userRequest
         subtype = _APIkeywords._analyticsRequest
         response = self._send_http_get_request( requestType=type, requestSubtype=subtype )
@@ -516,12 +536,11 @@ class SimPlurAPI:
         url = request.url
         statusCode = response.status_code
         reason = response.reason
-        elapsed = response.elapsed
-        decimalSeconds = elapsed / datetime.timedelta( microseconds=1 )
-        self._logger.info( '%s %s returned %d (%s) in %d seconds' % ( method, url, statusCode, reason, decimalSeconds ) )
+        elapsed = response.elapsed.total_seconds
+        self._logger.info( '%s %s returned %d (%s) in %f seconds' % ( method, url, statusCode, reason, elapsed ) )
 
     def _request_headers_http( self ):
-        authToken = self._devAuthToken if self._useDevelopmentMode else self._authToken
+        authToken = self._devAuthToken if self.config.is_in_development_mode else self._authToken
         return {
             'Content-Type': 'application/json',
             'Authorization': authToken
@@ -529,8 +548,7 @@ class SimPlurAPI:
 
     def _request_url_http( self, requestType:str, requestSubtype:str='', requestArg:str='' ):
         base = self.api_url_http()
-        urlArgs = os.path.join( requestType, requestSubtype, requestArg )
-        url = os.path.join( base, urlArgs )
+        url = os.path.join( base, requestType, requestSubtype, requestArg ).replace( '\\', '/' )
         if url.endswith( '/' ): # request URLs cannot have a trailing slash
             url = url[ slice( -1 ) ]
         return url
@@ -548,8 +566,13 @@ class SimPlurAPI:
         return self._send_http_request( 'DEL', requestType, requestSubtype, requestArg, params, body )
 
     def _send_http_request( self, requestMethod:str, requestType:str, requestSubtype:str, requestArg:str, params:dict, body:dict ):
-        url = self.api_url_http( requestType, requestSubtype, requestArg )
+        url = self._request_url_http( requestType, requestSubtype, requestArg )
         headers = self._request_headers_http()
-        response = self._requests.request( requestMethod, url, headers, params=params, data=body )
+        response = self._requests.request(
+            method=requestMethod,
+            url=url,
+            headers=headers,
+            params=params,
+            json=json.dumps( body ) if body != {} else body )
         self._log_response( response )
         return response
