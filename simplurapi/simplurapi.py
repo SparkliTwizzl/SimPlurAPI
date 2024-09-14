@@ -8,7 +8,7 @@ import logging
 import os
 import requests
 from dotenv import load_dotenv
-from typing import final
+from typing import Final
 
 
 _moduleName:str = 'SimPlurAPI'
@@ -68,12 +68,12 @@ class SimPlurAPI:
 
     config:Config
 
-    _API_URL_HTTP_DEFAULT:final[ str ] = "https://api.apparyllis.com/v#/"
-    _API_URL_SOCKET_DEFAULT:final[ str ] = "wss://api.apparyllis.com/v#/socket"
-    _API_VERSION_DEFAULT:final[ int ] = 1
-    _DEV_API_URL_HTTP_DEFAULT:final[ str ] = "https://devapi.apparyllis.com/v#/"
-    _DEV_API_URL_SOCKET_DEFAULT:final[ str ] = "wss://devapi.apparyllis.com/v#/socket"
-    _DEV_API_VERSION_DEFAULT:final[ int ] = 1
+    _API_URL_HTTP_DEFAULT:Final[ str ] = "https://api.apparyllis.com/v#/"
+    _API_URL_SOCKET_DEFAULT:Final[ str ] = "wss://api.apparyllis.com/v#/socket"
+    _API_VERSION_DEFAULT:Final[ int ] = 1
+    _DEV_API_URL_HTTP_DEFAULT:Final[ str ] = "https://devapi.apparyllis.com/v#/"
+    _DEV_API_URL_SOCKET_DEFAULT:Final[ str ] = "wss://devapi.apparyllis.com/v#/socket"
+    _DEV_API_VERSION_DEFAULT:Final[ int ] = 1
 
     _apiUrlHttp:str
     _apiUrlSocket:str
