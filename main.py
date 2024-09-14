@@ -20,5 +20,5 @@ if __name__ == "__main__":
     api = SimPlurAPI( requests )
     api.config.set_to_development_mode()
     api.config.set_connection_to_http()
-    test = api.get_all_automated_timers_for_self()
+    test = api.automatedTimers.get_all()
     print( test )
