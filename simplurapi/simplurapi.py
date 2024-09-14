@@ -22,7 +22,7 @@ class _APIkeywords:
 
 
 class SimPlurAPI:
-    class Config:
+    class _Config:
         _useDevelopmentMode:bool = True
         _useSocketConnection:bool = False
 
@@ -68,7 +68,7 @@ class SimPlurAPI:
             self._useSocketConnection = True
 
 
-    class Analytics:
+    class _Analytics:
         def __init__( self, outerInstance ):
             self.outer = outerInstance
 
@@ -80,7 +80,7 @@ class SimPlurAPI:
             return response
 
 
-    class AutomatedTimers:
+    class _AutomatedTimers:
         def __init__( self, outerInstance ):
             self.outer = outerInstance
 
@@ -111,7 +111,7 @@ class SimPlurAPI:
             raise NotImplemented
 
 
-    class BoardMessages:
+    class _BoardMessages:
         def __init__( self, outerInstance ):
             self.outer = outerInstance
 
@@ -140,7 +140,7 @@ class SimPlurAPI:
             raise NotImplemented
 
 
-    class ChatMessages:
+    class _ChatMessages:
         def __init__( self, outerInstance ):
             self.outer = outerInstance
 
@@ -165,7 +165,7 @@ class SimPlurAPI:
             raise NotImplemented
 
 
-    class ChatCategories:
+    class _ChatCategories:
         def __init__( self, outerInstance ):
             self.outer = outerInstance
 
@@ -193,7 +193,7 @@ class SimPlurAPI:
             raise NotImplemented
 
 
-    class ChatChannels:
+    class _ChatChannels:
         def __init__( self, outerInstance ):
             self.outer = outerInstance
 
@@ -221,7 +221,7 @@ class SimPlurAPI:
             raise NotImplemented
 
 
-    class Comments:
+    class _Comments:
         def __init__( self, outerInstance ):
             self.outer = outerInstance
 
@@ -249,7 +249,7 @@ class SimPlurAPI:
             raise NotImplemented
 
 
-    class CustomFronts:
+    class _CustomFronts:
         def __init__( self, outerInstance ):
             self.outer = outerInstance
 
@@ -280,7 +280,7 @@ class SimPlurAPI:
             raise NotImplemented
 
 
-    class Friends:
+    class _Friends:
         def __init__( self, outerInstance ):
             self.outer = outerInstance
 
@@ -329,7 +329,7 @@ class SimPlurAPI:
             raise NotImplemented
 
 
-    class FrontHistory:
+    class _FrontHistory:
         def __init__( self, outerInstance ):
             self.outer = outerInstance
 
@@ -362,7 +362,7 @@ class SimPlurAPI:
             raise NotImplemented
 
 
-    class Groups:
+    class _Groups:
         def __init__( self, outerInstance ):
             self.outer = outerInstance
 
@@ -390,7 +390,7 @@ class SimPlurAPI:
             raise NotImplemented
 
 
-    class Members:
+    class _Members:
         def __init__( self, outerInstance ):
             self.outer = outerInstance
 
@@ -421,7 +421,7 @@ class SimPlurAPI:
             raise NotImplemented
 
 
-    class Notes:
+    class _Notes:
         def __init__( self, outerInstance ):
             self.outer = outerInstance
 
@@ -452,7 +452,7 @@ class SimPlurAPI:
             raise NotImplemented
 
 
-    class Polls:
+    class _Polls:
         def __init__( self, outerInstance ):
             self.outer = outerInstance
 
@@ -483,7 +483,7 @@ class SimPlurAPI:
             raise NotImplemented
 
 
-    class PluralKit:
+    class _PluralKit:
         def __init__( self, outerInstance ):
             self.outer = outerInstance
 
@@ -504,7 +504,7 @@ class SimPlurAPI:
             raise NotImplemented
 
 
-    class RepeatedTimers:
+    class _RepeatedTimers:
         def __init__( self, outerInstance ):
             self.outer = outerInstance
 
@@ -535,7 +535,7 @@ class SimPlurAPI:
             raise NotImplemented
 
 
-    class Users:
+    class _Users:
         def __init__( self, outerInstance ):
             self.outer = outerInstance
 
@@ -568,24 +568,24 @@ class SimPlurAPI:
             raise NotImplemented
 
 
-    analytics:Analytics
-    automatedTimers:AutomatedTimers
-    boardMessages:BoardMessages
-    chatMessages:ChatMessages
-    chatCategories:ChatCategories
-    chatChannels:ChatChannels
-    comments:Comments
-    config:Config
-    customFronts:CustomFronts
-    friends:Friends
-    frontHistory:FrontHistory
-    groups:Groups
-    members:Members
-    notes:Notes
-    polls:Polls
-    pluralKit:PluralKit
-    repeatedTimers:RepeatedTimers
-    users:Users
+    analytics:_Analytics
+    automatedTimers:_AutomatedTimers
+    boardMessages:_BoardMessages
+    chatMessages:_ChatMessages
+    chatCategories:_ChatCategories
+    chatChannels:_ChatChannels
+    comments:_Comments
+    config:_Config
+    customFronts:_CustomFronts
+    friends:_Friends
+    frontHistory:_FrontHistory
+    groups:_Groups
+    members:_Members
+    notes:_Notes
+    polls:_Polls
+    pluralKit:_PluralKit
+    repeatedTimers:_RepeatedTimers
+    users:_Users
 
     _API_URL_HTTP_DEFAULT:Final[str] = "https://api.apparyllis.com/v#/"
     _API_URL_SOCKET_DEFAULT:Final[str] = "wss://api.apparyllis.com/v#/socket"
@@ -613,24 +613,24 @@ class SimPlurAPI:
         self._logger = logging.getLogger( __name__ )
         self._load_env_values()
         self._requests = requestProvider
-        self.analytics = SimPlurAPI.Analytics( self )
-        self.automatedTimers = SimPlurAPI.AutomatedTimers( self )
-        self.boardMessages = SimPlurAPI.BoardMessages( self )
-        self.chatMessages = SimPlurAPI.ChatMessages( self )
-        self.chatCategories = SimPlurAPI.ChatCategories( self )
-        self.chatChannels = SimPlurAPI.ChatChannels( self )
-        self.comments = SimPlurAPI.Comments( self )
-        self.config = SimPlurAPI.Config( self )
-        self.customFronts = SimPlurAPI.CustomFronts( self )
-        self.friends = SimPlurAPI.Friends( self )
-        self.frontHistory = SimPlurAPI.FrontHistory( self )
-        self.groups = SimPlurAPI.Groups( self )
-        self.members = SimPlurAPI.Members( self )
-        self.notes = SimPlurAPI.Notes( self )
-        self.polls = SimPlurAPI.Polls( self )
-        self.pluralKit = SimPlurAPI.PluralKit( self )
-        self.repeatedTimers = SimPlurAPI.RepeatedTimers( self )
-        self.users = SimPlurAPI.Users( self )
+        self.analytics = SimPlurAPI._Analytics( self )
+        self.automatedTimers = SimPlurAPI._AutomatedTimers( self )
+        self.boardMessages = SimPlurAPI._BoardMessages( self )
+        self.chatMessages = SimPlurAPI._ChatMessages( self )
+        self.chatCategories = SimPlurAPI._ChatCategories( self )
+        self.chatChannels = SimPlurAPI._ChatChannels( self )
+        self.comments = SimPlurAPI._Comments( self )
+        self.config = SimPlurAPI._Config( self )
+        self.customFronts = SimPlurAPI._CustomFronts( self )
+        self.friends = SimPlurAPI._Friends( self )
+        self.frontHistory = SimPlurAPI._FrontHistory( self )
+        self.groups = SimPlurAPI._Groups( self )
+        self.members = SimPlurAPI._Members( self )
+        self.notes = SimPlurAPI._Notes( self )
+        self.polls = SimPlurAPI._Polls( self )
+        self.pluralKit = SimPlurAPI._PluralKit( self )
+        self.repeatedTimers = SimPlurAPI._RepeatedTimers( self )
+        self.users = SimPlurAPI._Users( self )
 
 
     def api_url_http( self ):

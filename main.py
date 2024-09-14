@@ -1,8 +1,7 @@
 import datetime
 import logging
 import os
-import requests
-from simplurapi.simplurapi import SimPlurAPI
+from simplurapi import simplurapi
 
 
 if __name__ == "__main__":
@@ -17,7 +16,7 @@ if __name__ == "__main__":
         handlers=[
             logging.StreamHandler(),
             logging.FileHandler( logFile )])
-    api = SimPlurAPI( requests )
+    api = simplurapi.SimPlurAPI()
     api.config.set_to_development_mode()
     api.config.set_connection_to_http()
     test = api.automatedTimers.get_all()
