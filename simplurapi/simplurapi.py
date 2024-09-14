@@ -1,4 +1,7 @@
-__all__ = ['SimPlurAPI']
+_MODULE_NAME:Final[str] = 'SimPlurAPI'
+
+
+__all__ = [_MODULE_NAME]
 __version__ = '0.1.0'
 __author__ = 'SparkliTwizzl'
 
@@ -9,9 +12,6 @@ import os
 import requests
 from dotenv import load_dotenv
 from typing import Final
-
-
-_moduleName:str = 'SimPlurAPI'
 
 
 class _APIkeywords:
@@ -27,8 +27,8 @@ class SimPlurAPI:
         _useSocketConnection:bool = False
 
 
-        def __init__( self, outer_instance ):
-            self.outer = outer_instance
+        def __init__( self, outerInstance ):
+            self.outer = outerInstance
 
 
         def is_in_development_mode( self ):
@@ -44,7 +44,7 @@ class SimPlurAPI:
             return self._useSocketConnection
 
         def set_to_development_mode( self ):
-            self.outer._logger.info( 'Set %s to development mode.' % _moduleName )
+            self.outer._logger.info( 'Set %s to development mode.' % _MODULE_NAME )
             self._useDevelopmentMode = True
             if self.outer._devUserId is None or self.outer._devUserId == '':
                 raise ValueError( 'Dev user ID cannot be blank.' )
@@ -52,7 +52,7 @@ class SimPlurAPI:
                 raise ValueError( 'Dev auth token cannot be blank.' )
 
         def set_to_production_mode( self ):
-            self.outer._logger.info( 'Set %s to production mode.' % _moduleName )
+            self.outer._logger.info( 'Set %s to production mode.' % _MODULE_NAME )
             self._useDevelopmentMode = False
             if self.outer._userId is None or self.outer._userId == '':
                 raise ValueError( 'User ID cannot be blank.' )
@@ -60,15 +60,532 @@ class SimPlurAPI:
                 raise ValueError( 'Auth token cannot be blank.' )
 
         def set_connection_to_http( self ):
-            self.outer._logger.info( 'Set %s connection mode to HTTP.' % _moduleName )
+            self.outer._logger.info( 'Set %s connection mode to HTTP.' % _MODULE_NAME )
             self._useSocketConnection = False
 
         def set_connection_to_socket( self ):
-            self.outer._logger.info( 'Set %s connection mode to WebSocket.' % _moduleName )
+            self.outer._logger.info( 'Set %s connection mode to WebSocket.' % _MODULE_NAME )
             self._useSocketConnection = True
 
 
+    class Analytics:
+        def __init__( self, outerInstance ):
+            self.outer = outerInstance
+
+        def get_for_self( self ):
+            #TODO this is broken
+            response = self.outer._send_http_get_request(
+                type=_APIkeywords._TYPE_USER,
+                subtype=_APIkeywords._SUBTYPE_ANALYTICS )
+            return response
+
+
+    class AutomatedTimers:
+        def __init__( self, outerInstance ):
+            self.outer = outerInstance
+
+        def add( self, timerId:str, name:str, message:str, type:int, delayInHours:int ):
+            #TODO
+            raise NotImplemented
+
+        def delete( self, timerId:str ):
+            #TODO
+            raise NotImplemented
+
+        def get( self, timerId:str ):
+            #TODO
+            raise NotImplemented
+
+        def get_all( self ):
+            return self.get_all_for_system( self.outer.user_id() )
+
+        def get_all_for_system( self, systemId:str ):
+            response = self.outer._send_http_get_request(
+                type=_APIkeywords._TYPE_TIMERS,
+                subtype=_APIkeywords._SUBTYPE_AUTOMATED,
+                arg=systemId )
+            return response
+
+        def update( self, timerId:str, name:str, message:str, type:int, delayInHours:int ):
+            #TODO
+            raise NotImplemented
+
+
+    class BoardMessages:
+        def __init__( self, outerInstance ):
+            self.outer = outerInstance
+
+        def add( self, id, title:str, message:str, writtenBy:str, writtenFor:str, writtenAt:int, read:bool, supportMarkdown:bool ):
+            #TODO
+            raise NotImplemented
+
+        def delete( self, id ):
+            #TODO
+            raise NotImplemented
+
+        def get( self, messageId:str ):
+            #TODO
+            raise NotImplemented
+
+        def get_all_for_member( self, memberId:str ):
+            #TODO
+            raise NotImplemented
+
+        def get_all_unread( self ):
+            #TODO
+            raise NotImplemented
+
+        def update( self, id, read:bool ):
+            #TODO
+            raise NotImplemented
+
+
+    class ChatMessages:
+        def __init__( self, outerInstance ):
+            self.outer = outerInstance
+
+        def add( self, id, message:str, channelId:str, writerId:str, writtenAt:int, replyToId:str ):
+            #TODO
+            raise NotImplemented
+
+        def delete( self, id ):
+            #TODO
+            raise NotImplemented
+
+        def get( self, id ):
+            #TODO
+            raise NotImplemented
+
+        def get_all_for_channel( self, channelId:str ):
+            #TODO
+            raise NotImplemented
+
+        def update( self, id, message:str, updatedAt:int ):
+            #TODO
+            raise NotImplemented
+
+
+    class ChatCategories:
+        def __init__( self, outerInstance ):
+            self.outer = outerInstance
+
+        def add( self, id, name:str, desc:str, channelIds:list ):
+            #TODO
+            raise NotImplemented
+
+        def delete( self, id ):
+            #TODO
+            raise NotImplemented
+
+        def get( self, id ):
+            #TODO
+            raise NotImplemented
+
+        def get_all( self ):
+            return self.get_all_for_system( self.outer.user_id() )
+
+        def get_all_for_system( self, systemId:str ):
+            #TODO
+            raise NotImplemented
+
+        def update( self, id, name:str, desc:str, channelIds:list ):
+            #TODO
+            raise NotImplemented
+
+
+    class ChatChannels:
+        def __init__( self, outerInstance ):
+            self.outer = outerInstance
+
+        def add( self, id, name:str, desc:str ):
+            #TODO
+            raise NotImplemented
+
+        def delete( self, id ):
+            #TODO
+            raise NotImplemented
+
+        def get( self, id ):
+            #TODO
+            raise NotImplemented
+
+        def get_all( self ):
+            return self.get_all_for_system( self.outer.user_id() )
+
+        def get_all_for_system( self, systemId:str ):
+            #TODO
+            raise NotImplemented
+
+        def update( self, id, name:str, desc:str ):
+            #TODO
+            raise NotImplemented
+
+
+    class Comments:
+        def __init__( self, outerInstance ):
+            self.outer = outerInstance
+
+        def add( self, commentId:str, time:int, text:str, supportMarkdown:bool, parentDocId:str, collectionId:str ):
+            #TODO
+            raise NotImplemented
+
+        def delete( self, commentId:str ):
+            #TODO
+            raise NotImplemented
+
+        def get_all_of_type( self, commentId:str, type:str ):
+            #TODO
+            raise NotImplemented
+
+        def get( self, commentId:str ):
+            return self.get_from_system( commentId, self.outer.user_id() )
+
+        def get_from_system( self, commentId:str, systemId:str ):
+            #TODO
+            raise NotImplemented
+
+        def update( self, commentId:str, text:str, supportMarkdown:bool ):
+            #TODO
+            raise NotImplemented
+
+
+    class CustomFronts:
+        def __init__( self, outerInstance ):
+            self.outer = outerInstance
+
+        def add( self, frontId:str, name:str, desc:str, avatarURL:str, color:str, private:bool, preventTrusted:bool, supportDescMarkdown:bool ):
+            #TODO
+            raise NotImplemented
+
+        def delete( self, frontId:str ):
+            #TODO
+            raise NotImplemented
+
+        def get( self, frontId:str ):
+            return self.get_from_system( frontId, self.outer.user_id() )
+
+        def get_all( self ):
+            return self.get_all_from_system( self.outer.user_id() )
+
+        def get_all_from_system( self, systemId:str ):
+            #TODO
+            raise NotImplemented
+
+        def get_from_system( self, frontId:str, systemId:str ):
+            #TODO
+            raise NotImplemented
+
+        def update( self, frontId:str, name:str, desc:str, avatarURL:str, color:str, private:bool, preventTrusted:bool, supportDescMarkdown:bool ):
+            #TODO
+            raise NotImplemented
+
+
+    class Friends:
+        def __init__( self, outerInstance ):
+            self.outer = outerInstance
+
+        def add( self, user:str ):
+            #TODO
+            raise NotImplemented
+
+        def delete_request( self, user:str ):
+            #TODO
+            raise NotImplemented
+
+        def get_all( self ):
+            #TODO
+            raise NotImplemented
+
+        def get_all_recieved_requests( self ):
+            #TODO
+            raise NotImplemented
+
+        def get_all_sent_requests( self ):
+            #TODO
+            raise NotImplemented
+
+        def get_current_fronters_for_all_friends( self ):
+            #TODO
+            raise NotImplemented
+
+        def get_current_fronters_for_friend( self, userId:str ):
+            #TODO
+            raise NotImplemented
+
+        def get_friend_settings_for_user( self, userId:str, friendUserId:str ):
+            #TODO
+            raise NotImplemented
+
+        def remove( self, user:str ):
+            #TODO
+            raise NotImplemented
+
+        def respond_to_request( self, user:str ):
+            #TODO
+            raise NotImplemented
+
+        def update_settings_for_friend( self, userId:str ):
+            #TODO
+            raise NotImplemented
+
+
+    class FrontHistory:
+        def __init__( self, outerInstance ):
+            self.outer = outerInstance
+
+        def add_entry( self, entryId:str, customStatus:str, custom:bool, live:bool, startTime:int, endTime:int, fronterId:str ):
+            #TODO
+            raise NotImplemented
+
+        def delete_entry( self, entryId:str ):
+            #TODO
+            raise NotImplemented
+
+        def get_all_current_fronters( self ):
+            #TODO
+            raise NotImplemented
+
+        def get_entries_for_member( self, memberId:str, startTime:int=None, endTime:int=None ):
+            #TODO
+            raise NotImplemented
+
+        def get_entries_for_system( self, systemId:str, startTime:int, endTime:int ):
+            #TODO
+            raise NotImplemented
+
+        def get_entry( self, systemId:str, entryId:str ):
+            #TODO
+            raise NotImplemented
+
+        def update_entry( self, entryId:str, customStatus:str, custom:bool, live:bool, startTime:int, endTime:int, fronterId:str ):
+            #TODO
+            raise NotImplemented
+
+
+    class Groups:
+        def __init__( self, outerInstance ):
+            self.outer = outerInstance
+
+        def add( self, groupId:str, name:str, desc:str, color:str, private:bool, preventTrusted:bool, supportDescMarkdown:bool, emoji:str, parentId:str, members:list ):
+            #TODO
+            raise NotImplemented
+
+        def delete( self, groupId:str ):
+            #TODO
+            raise NotImplemented
+
+        def get( self, groupId:str ):
+            return self.get_from_system( groupId, self.outer.user_id() )
+
+        def get_all_groups( self, systemId:str ):
+            #TODO
+            raise NotImplemented
+
+        def get_from_system( self, groupId:str, systemId:str ):
+            #TODO
+            raise NotImplemented
+
+        def update_group( self, groupId:str, name:str, desc:str, color:str, private:bool, preventTrusted:bool, supportDescMarkdown:bool, emoji:str, parentId:str, members:list ):
+            #TODO
+            raise NotImplemented
+
+
+    class Members:
+        def __init__( self, outerInstance ):
+            self.outer = outerInstance
+
+        def add( self, memberId:str, name:str, desc:str, color:str, pronouns:str, pluralkitId:str, avatarURL:str, private:bool, preventTrusted:bool, supportDescMarkdown:bool, preventFrontNotifs:bool, info ):
+            #TODO
+            raise NotImplemented
+
+        def delete( self, memberId:str ):
+            #TODO
+            raise NotImplemented
+
+        def get( self, memberId:str ):
+            return self.get_from_system( self, memberId, self.outer.user_id() )
+
+        def get_all( self ):
+            return self.get_all_from_system( self.outer.user_id() )
+
+        def get_all_from_system( self, systemId:str ):
+            #TODO
+            raise NotImplemented
+
+        def get_from_system( self, memberId: str, systemId:str ):
+            #TODO
+            raise NotImplemented
+
+        def update( self, memberId:str, name:str, desc:str, color:str, pronouns:str, pluralkitId:str, avatarURL:str, private:bool, preventTrusted:bool, supportDescMarkdown:bool, preventFrontNotifs:bool, info ):
+            #TODO
+            raise NotImplemented
+
+
+    class Notes:
+        def __init__( self, outerInstance ):
+            self.outer = outerInstance
+
+        def add( self, noteId:str, title:str, text:str, color:str, memberId:str, timestamp:int, supportDescMarkdown:bool ):
+            #TODO
+            raise NotImplemented
+
+        def delete( self, noteId:str ):
+            #TODO
+            raise NotImplemented
+
+        def get( self, noteId:str ):
+            return self.get_from_system( noteId, self.outer.user_id() )
+
+        def get_all( self ):
+            return self.get_all_from_system( self.outer.user_id() )
+
+        def get_all_from_system( self, systemId:str ):
+            #TODO
+            raise NotImplemented
+
+        def get_from_system( self, noteId:str , systemId:str):
+            #TODO
+            raise NotImplemented
+
+        def update( self, noteId:str, title:str, text:str, color:str, memberId:str, timestamp:int, supportDescMarkdown:bool ):
+            #TODO
+            raise NotImplemented
+
+
+    class Polls:
+        def __init__( self, outerInstance ):
+            self.outer = outerInstance
+
+        def add( self, pollId:str, title:str, desc:str, allowAbstain:bool, allowVeto:bool, custom:bool, endTime:int, supportDescMarkdown:bool, options, votes ):
+            #TODO
+            raise NotImplemented
+
+        def delete( self, pollId:str ):
+            #TODO
+            raise NotImplemented
+
+        def get( self, pollId:str ):
+            return self.get_from_system( self.outer.user_id() )
+
+        def get_all( self ):
+            return self.get_all_from_system( self.outer.user_id() )
+
+        def get_all_from_system( self, systemId:str ):
+            #TODO
+            raise NotImplemented
+
+        def get_from_system( self, pollId:str, systemId:str ):
+            #TODO
+            raise NotImplemented
+
+        def update( self, pollId:str, title:str, desc:str, allowAbstain:bool, allowVeto:bool, custom:bool, endTime:int, supportDescMarkdown:bool, options, votes ):
+            #TODO
+            raise NotImplemented
+
+
+    class PluralKit:
+        def __init__( self, outerInstance ):
+            self.outer = outerInstance
+
+        def sync_member_from_pluralkit( self, memberId:str ):
+            #TODO
+            raise NotImplemented
+
+        def sync_member_to_pluralkit( self, memberId:str ):
+            #TODO
+            raise NotImplemented
+
+        def sync_all_members_from_pluralkit( self ):
+            #TODO
+            raise NotImplemented
+
+        def sync_all_members_to_pluralkit( self ):
+            #TODO
+            raise NotImplemented
+
+
+    class RepeatedTimers:
+        def __init__( self, outerInstance ):
+            self.outer = outerInstance
+
+        def add( self, timerId:str, title:str, text:str, dayInterval:int, time, startTime ):
+            #TODO
+            raise NotImplemented
+
+        def delete( self, timerId:str ):
+            #TODO
+            raise NotImplemented
+
+        def get( self, timerId:str ):
+            return self.get_from_system( timerId, self.outer.user_id() )
+
+        def get_all( self ):
+            return self.get_all_from_system( self.outer.user_id() )
+
+        def get_all_from_system( self, systemId:str ):
+            #TODO
+            raise NotImplemented
+
+        def get_from_system( self, timerId:str, systemId:str ):
+            #TODO
+            raise NotImplemented
+
+        def update( self, timerId:str, title:str, text:str, dayInterval:int, time, startTime ):
+            #TODO
+            raise NotImplemented
+
+
+    class Users:
+        def __init__( self, outerInstance ):
+            self.outer = outerInstance
+
+        def delete_report( self, reportId:str ):
+            #TODO
+            raise NotImplemented
+
+        def generate_report( self ):
+            #TODO
+            raise NotImplemented
+
+        def get( self, userId:str ):
+            #TODO
+            raise NotImplemented
+
+        def get_all_reports( self ):
+            #TODO
+            raise NotImplemented
+
+        def get_user_id_for_auth_token( self ):
+            #TODO
+            raise NotImplemented
+
+        def set_username( self, userId:str, username:str ):
+            #TODO
+            raise NotImplemented
+
+        def update( self, userId:str ):
+            #TODO
+            raise NotImplemented
+
+
     config:Config
+    analytics:Analytics
+    automatedTimers:AutomatedTimers
+    boardMessages:BoardMessages
+    chatMessages:ChatMessages
+    chatCategories:ChatCategories
+    chatChannels:ChatChannels
+    comments:Comments
+    customFronts:CustomFronts
+    friends:Friends
+    frontHistory:FrontHistory
+    groups:Groups
+    members:Members
+    notes:Notes
+    polls:Polls
+    pluralKit:PluralKit
+    repeatedTimers:RepeatedTimers
+    users:Users
 
     _API_URL_HTTP_DEFAULT:Final[str] = "https://api.apparyllis.com/v#/"
     _API_URL_SOCKET_DEFAULT:Final[str] = "wss://api.apparyllis.com/v#/socket"
@@ -97,9 +614,25 @@ class SimPlurAPI:
         self._load_env_values()
         self._requests = requestProvider
         self.config = SimPlurAPI.Config( self )
+        self.analytics = SimPlurAPI.Analytics( self )
+        self.automatedTimers = SimPlurAPI.AutomatedTimers( self )
+        self.boardMessages = SimPlurAPI.BoardMessages( self )
+        self.chatMessages = SimPlurAPI.ChatMessages( self )
+        self.chatCategories = SimPlurAPI.ChatCategories( self )
+        self.chatChannels = SimPlurAPI.ChatChannels( self )
+        self.comments = SimPlurAPI.Comments( self )
+        self.customFronts = SimPlurAPI.CustomFronts( self )
+        self.friends = SimPlurAPI.Friends( self )
+        self.frontHistory = SimPlurAPI.FrontHistory( self )
+        self.groups = SimPlurAPI.Groups( self )
+        self.members = SimPlurAPI.Members( self )
+        self.notes = SimPlurAPI.Notes( self )
+        self.polls = SimPlurAPI.Polls( self )
+        self.pluralKit = SimPlurAPI.PluralKit( self )
+        self.repeatedTimers = SimPlurAPI.RepeatedTimers( self )
+        self.users = SimPlurAPI.Users( self )
 
 
-    # public non-API methods
     def api_url_http( self ):
         if self.config.is_in_development_mode():
             return self._devApiUrlHttp.replace( '#', self._devApiVersion )
@@ -137,398 +670,6 @@ class SimPlurAPI:
         return self._userId
 
 
-    # public API methods
-    def get_analytics( self ):
-        response = self._send_http_get_request(
-            type=_APIkeywords._TYPE_USER,
-            subtype=_APIkeywords._SUBTYPE_ANALYTICS )
-        return response
-
-
-    def get_automated_timer( self, timerId:str ):
-        #TODO
-        raise NotImplemented
-
-    def get_all_automated_timers_for_system( self, systemId:str ):
-        response = self._send_http_get_request(
-            type=_APIkeywords._TYPE_TIMERS,
-            subtype=_APIkeywords._SUBTYPE_AUTOMATED,
-            arg=systemId )
-        return response
-
-    def get_all_automated_timers_for_self( self ):
-        return self.get_all_automated_timers_for_system( self.user_id() )
-
-    def add_automated_timer( self, timerId:str, name:str, message:str, type:int, delayInHours:int ):
-        #TODO
-        raise NotImplemented
-
-    def update_automated_timer( self, timerId:str, name:str, message:str, type:int, delayInHours:int ):
-        #TODO
-        raise NotImplemented
-
-    def delete_automated_timer( self, timerId:str ):
-        #TODO
-        raise NotImplemented
-
-
-    def get_board_message( self, messageId:str ):
-        #TODO
-        raise NotImplemented
-
-    def get_all_board_messages_for_member( self, memberId:str ):
-        #TODO
-        raise NotImplemented
-
-    def get_all_unread_board_messages( self ):
-        #TODO
-        raise NotImplemented
-
-    def add_board_message( self, id, title:str, message:str, writtenBy:str, writtenFor:str, writtenAt:int, read:bool, supportMarkdown:bool ):
-        #TODO
-        raise NotImplemented
-
-    def update_board_message( self, id, read:bool ):
-        #TODO
-        raise NotImplemented
-
-    def delete_board_message( self, id ):
-        #TODO
-        raise NotImplemented
-
-
-    def get_chat_message( self, id ):
-        #TODO
-        raise NotImplemented
-
-    def get_all_chat_messages_for_channel( self, channelId:str ):
-        #TODO
-        raise NotImplemented
-
-    def add_chat_message( self, id, message:str, channelId:str, writerId:str, writtenAt:int, replyToId:str ):
-        #TODO
-        raise NotImplemented
-
-    def update_chat_message( self, id, message:str, updatedAt:int ):
-        #TODO
-        raise NotImplemented
-
-    def delete_chat_message( self, id ):
-        #TODO
-        raise NotImplemented
-
-
-    def get_chat_category( self, id ):
-        #TODO
-        raise NotImplemented
-
-    def get_all_chat_categories( self, systemId:str ):
-        #TODO
-        raise NotImplemented
-
-    def add_chat_category( self, id, name:str, description:str, channelIds:list ):
-        #TODO
-        raise NotImplemented
-
-    def update_chat_category( self, id, name:str, description:str, channelIds:list ):
-        #TODO
-        raise NotImplemented
-
-    def delete_chat_category( self, id ):
-        #TODO
-        raise NotImplemented
-
-
-    def get_chat_channel( self, id ):
-        #TODO
-        raise NotImplemented
-
-    def get_all_chat_channels( self, systemId:str ):
-        #TODO
-        raise NotImplemented
-
-    def add_chat_channel( self, id, name:str, description:str ):
-        #TODO
-        raise NotImplemented
-
-    def update_chat_channel( self, id, name:str, description:str ):
-        #TODO
-        raise NotImplemented
-
-    def delete_chat_channel( self, id ):
-        #TODO
-        raise NotImplemented
-
-
-    def get_comment( self, systemId:str, commentId:str ):
-        #TODO
-        raise NotImplemented
-
-    def get_all_comments( self, commentId:str, type:str ):
-        #TODO
-        raise NotImplemented
-
-    def add_comment( self, commentId:str, time:int, text:str, supportMarkdown:bool, parentDocId:str, collectionId:str ):
-        #TODO
-        raise NotImplemented
-
-    def update_comment( self, commentId:str, text:str, supportMarkdown:bool ):
-        #TODO
-        raise NotImplemented
-
-    def delete_comment( self, commentId:str ):
-        #TODO
-        raise NotImplemented
-
-
-    def get_custom_front( self, frontId:str, systemId:str ):
-        #TODO
-        raise NotImplemented
-
-    def get_all_custom_fronts( self, systemId:str ):
-        #TODO
-        raise NotImplemented
-
-    def add_custom_front( self, frontId:str, name:str, description:str, avatarURL:str, color:str, private:bool, preventTrusted:bool, supportDescMarkdown:bool ):
-        #TODO
-        raise NotImplemented
-
-    def update_custom_front( self, frontId:str, name:str, description:str, avatarURL:str, color:str, private:bool, preventTrusted:bool, supportDescMarkdown:bool ):
-        #TODO
-        raise NotImplemented
-
-    def delete_custom_front( self, frontId:str ):
-        #TODO
-        raise NotImplemented
-
-
-    def get_all_friends( self ):
-        #TODO
-        raise NotImplemented
-
-    def get_all_recieved_friend_requests( self ):
-        #TODO
-        raise NotImplemented
-
-    def get_all_sent_friend_requests( self ):
-        #TODO
-        raise NotImplemented
-
-    def get_current_fronters_for_friend( self, userId:str ):
-        #TODO
-        raise NotImplemented
-
-    def get_current_fronters_for_all_friends( self ):
-        #TODO
-        raise NotImplemented
-
-    def get_friend_settings_for_user( self, userId:str, friendId:str ):
-        #TODO
-        raise NotImplemented
-
-    def add_friend( self, user:str ):
-        #TODO
-        raise NotImplemented
-
-    def respond_to_friend_request( self, user:str ):
-        #TODO
-        raise NotImplemented
-
-    def update_settings_for_friend( self, user:str ):
-        #TODO
-        raise NotImplemented
-
-    def delete_friend_request( self, user:str ):
-        #TODO
-        raise NotImplemented
-
-    def remove_friend( self, user:str ):
-        #TODO
-        raise NotImplemented
-
-
-    def get_all_current_fronters( self ):
-        #TODO
-        raise NotImplemented
-
-    def get_front_history_entry( self, systemId:str, entryId:str ):
-        #TODO
-        raise NotImplemented
-
-    def get_front_history_entries_for_timespan( self, systemId:str, startTime:int, endTime:int ):
-        #TODO
-        raise NotImplemented
-
-    def get_front_history_entries_for_member( self, memberId:str, startTime:int, endTime:int ):
-        #TODO
-        raise NotImplemented
-
-    def add_front_history_entry( self, entryId:str, customStatus:str, custom:bool, live:bool, startTime:int, endTime:int, fronterId:str ):
-        #TODO
-        raise NotImplemented
-
-    def update_front_history_entry( self, entryId:str, customStatus:str, custom:bool, live:bool, startTime:int, endTime:int, fronterId:str ):
-        #TODO
-        raise NotImplemented
-
-    def delete_front_history_entry( self, entryId:str ):
-        #TODO
-        raise NotImplemented
-
-
-
-    def get_group( self, systemId:str, groupId:str ):
-        #TODO
-        raise NotImplemented
-
-    def get_all_groups( self, systemId:str ):
-        #TODO
-        raise NotImplemented
-
-    def add_group( self, groupId:str, name:str, description:str, color:str, private:bool, preventTrusted:bool, supportDescMarkdown:bool, emoji:str, parentId:str, members:list ):
-        #TODO
-        raise NotImplemented
-
-    def update_group( self, groupId:str, name:str, description:str, color:str, private:bool, preventTrusted:bool, supportDescMarkdown:bool, emoji:str, parentId:str, members:list ):
-        #TODO
-        raise NotImplemented
-
-    def delete_group( self, groupId:str ):
-        #TODO
-        raise NotImplemented
-
-
-    def get_member( self, systemId:str, memberId: str ):
-        #TODO
-        raise NotImplemented
-
-    def get_all_members( self, systemId:str ):
-        #TODO
-        raise NotImplemented
-
-    def add_member( self, memberId:str, name:str, description:str, color:str, pronouns:str, pluralkitId:str, avatarURL:str, private:bool, preventTrusted:bool, supportDescMarkdown:bool, preventFrontNotifs:bool, info ):
-        #TODO
-        raise NotImplemented
-
-    def update_member( self, memberId:str, name:str, description:str, color:str, pronouns:str, pluralkitId:str, avatarURL:str, private:bool, preventTrusted:bool, supportDescMarkdown:bool, preventFrontNotifs:bool, info ):
-        #TODO
-        raise NotImplemented
-
-    def delete_member( self, memberId:str ):
-        #TODO
-        raise NotImplemented
-
-
-    def get_note( self, systemId:str, noteId:str ):
-        #TODO
-        raise NotImplemented
-
-    def get_all_notes( self, systemId:str ):
-        #TODO
-        raise NotImplemented
-
-    def add_note( self, noteId:str, title:str, text:str, color:str, memberId:str, timestamp:int, supportDescMarkdown:bool ):
-        #TODO
-        raise NotImplemented
-
-    def update_note( self, noteId:str, title:str, text:str, color:str, memberId:str, timestamp:int, supportDescMarkdown:bool ):
-        #TODO
-        raise NotImplemented
-
-    def delete_note( self, noteId:str ):
-        #TODO
-        raise NotImplemented
-
-
-    def get_poll( self, systemId:str, pollId:str ):
-        #TODO
-        raise NotImplemented
-
-    def get_all_polls( self, systemId:str ):
-        #TODO
-        raise NotImplemented
-
-    def add_poll( self, pollId:str, title:str, desc:str, allowAbstain:bool, allowVeto:bool, custom:bool, endTime:int, supportDescMarkdown:bool, options, votes ):
-        #TODO
-        raise NotImplemented
-
-    def update_poll( self, pollId:str, title:str, desc:str, allowAbstain:bool, allowVeto:bool, custom:bool, endTime:int, supportDescMarkdown:bool, options, votes ):
-        #TODO
-        raise NotImplemented
-
-    def delete_poll( self, pollId:str ):
-        #TODO
-        raise NotImplemented
-
-
-    def sync_member_from_pluralkit( self, memberId:str ):
-        #TODO
-        raise NotImplemented
-
-    def sync_member_to_pluralkit( self, memberId:str ):
-        #TODO
-        raise NotImplemented
-
-    def sync_all_members_from_pluralkit( self ):
-        #TODO
-        raise NotImplemented
-
-    def sync_all_members_to_pluralkit( self ):
-        #TODO
-        raise NotImplemented
-
-
-    def get_repeated_timer( self, systemId:str, timerId:str ):
-        #TODO
-        raise NotImplemented
-
-    def get_all_repeated_timers( self, systemId:str ):
-        #TODO
-        raise NotImplemented
-
-    def add_repeated_timer( self, timerId:str, title:str, text:str, dayInterval:int, time, startTime ):
-        #TODO
-        raise NotImplemented
-
-    def update_repeated_timer( self, timerId:str, title:str, text:str, dayInterval:int, time, startTime ):
-        #TODO
-        raise NotImplemented
-
-    def delete_repeated_timer( self, timerId:str ):
-        #TODO
-        raise NotImplemented
-
-
-    def get_user_id_for_auth_token( self ):
-        #TODO
-        raise NotImplemented
-
-    def get_user( self, userId:str ):
-        #TODO
-        raise NotImplemented
-
-    def get_all_reports( self ):
-        #TODO
-        raise NotImplemented
-
-    def generate_report( self ):
-        #TODO
-        raise NotImplemented
-
-    def update_user( self, userId:str ):
-        #TODO
-        raise NotImplemented
-
-    def set_username( self, userId:str, username:str ):
-        #TODO
-        raise NotImplemented
-
-    def delete_report( self, reportId:str ):
-        #TODO
-        raise NotImplemented
-
-
-    # private methods
     def _load_env_values( self ):
         try:
             load_dotenv()
