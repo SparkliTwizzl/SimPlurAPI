@@ -46,38 +46,16 @@ class SimPlurAPI:
         self._requests = requestProvider
 
 
-    # public API methods
-    def use_development_mode( self ):
-        self._logger.info( 'Set %s to development mode.' % _moduleName )
-        self._useDevelopmentMode = True
-        if self._devUserId is None or self._devUserId == '':
-            raise ValueError( 'Dev user ID cannot be blank.' )
-        if self._devAuthToken is None or self._devAuthToken == '':
-            raise ValueError( 'Dev auth token cannot be blank.' )
+    # public non-API methods
+    def api_url_http( self ):
+        if self._useDevelopmentMode:
+            return self._devApiUrlHttp.replace( '#', self._devApiVersion )
+        return self._apiUrlHttp.replace( '#', self._apiVersion )
 
-    def use_production_mode( self ):
-        self._logger.info( 'Set %s to production mode.' % _moduleName )
-        self._useDevelopmentMode = False
-        if self._userId is None or self._userId == '':
-            raise ValueError( 'User ID cannot be blank.' )
-        if self._authToken is None or self._authToken == '':
-            raise ValueError( 'Auth token cannot be blank.' )
-
-    def use_http_connection( self ):
-        self._logger.info( 'Set %s connection mode to HTTP.' % _moduleName )
-        self._useSocketConnection = False
-
-    def use_socket_connection( self ):
-        self._logger.info( 'Set %s connection mode to WebSocket.' % _moduleName )
-        self._useSocketConnection = True
-
-    def open_socket_connection( self ):
-        if not self._useSocketConnection:
-            raise ConnectionError( 'WebSocket connection is not enabled.' )
-        if self._isSocketConnectionAlive:
-            raise ConnectionRefusedError( 'WebSocket connection is already open.' )
-        #TODO
-        raise NotImplemented
+    def api_url_socket( self ):
+        if self._useDevelopmentMode:
+            return self._devApiUrlSocket.replace( '#', self._devApiVersion )
+        return self._apiUrlSocket.replace( '#', self._apiVersion )
 
     def close_socket_connection( self ):
         if not self._useSocketConnection:
@@ -87,7 +65,40 @@ class SimPlurAPI:
         #TODO
         raise NotImplemented
 
+    def open_socket_connection( self ):
+        if not self._useSocketConnection:
+            raise ConnectionError( 'WebSocket connection is not enabled.' )
+        if self._isSocketConnectionAlive:
+            raise ConnectionRefusedError( 'WebSocket connection is already open.' )
+        #TODO
+        raise NotImplemented
 
+    def use_development_mode( self ):
+        self._logger.info( 'Set %s to development mode.' % _moduleName )
+        self._useDevelopmentMode = True
+        if self._devUserId is None or self._devUserId == '':
+            raise ValueError( 'Dev user ID cannot be blank.' )
+        if self._devAuthToken is None or self._devAuthToken == '':
+            raise ValueError( 'Dev auth token cannot be blank.' )
+
+    def use_http_connection( self ):
+        self._logger.info( 'Set %s connection mode to HTTP.' % _moduleName )
+        self._useSocketConnection = False
+
+    def use_production_mode( self ):
+        self._logger.info( 'Set %s to production mode.' % _moduleName )
+        self._useDevelopmentMode = False
+        if self._userId is None or self._userId == '':
+            raise ValueError( 'User ID cannot be blank.' )
+        if self._authToken is None or self._authToken == '':
+            raise ValueError( 'Auth token cannot be blank.' )
+
+    def use_socket_connection( self ):
+        self._logger.info( 'Set %s connection mode to WebSocket.' % _moduleName )
+        self._useSocketConnection = True
+
+
+    # public API methods
     def get_analytics( self ):
         #TODO
         raise NotImplemented
@@ -468,18 +479,6 @@ class SimPlurAPI:
     def delete_report( self, reportId:str ):
         #TODO
         raise NotImplemented
-
-
-    # public non-API methods
-    def api_url_http( self ):
-        if self._useDevelopmentMode:
-            return self._devApiUrlHttp.replace( '#', self._devApiVersion )
-        return self._apiUrlHttp.replace( '#', self._apiVersion )
-
-    def api_url_socket( self ):
-        if self._useDevelopmentMode:
-            return self._devApiUrlSocket.replace( '#', self._devApiVersion )
-        return self._apiUrlSocket.replace( '#', self._apiVersion )
 
 
     # private methods
