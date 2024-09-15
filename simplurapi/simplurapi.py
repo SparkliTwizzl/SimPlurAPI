@@ -15,6 +15,8 @@ _MODULE_NAME:Final[str] = 'SimPlurAPI'
 
 
 class _APIkeywords:
+    _PARAM_END_TIME:Final[str] = 'endTime'
+    _PARAM_START_TIME:Final[str] = 'startTime'
     _SUBTYPE_ANALYTICS:Final[str] = 'analytics'
     _SUBTYPE_AUTOMATED:Final[str] = 'automated'
     _TYPE_TIMERS:Final[str] = 'timers'
@@ -72,11 +74,15 @@ class SimPlurAPI:
         def __init__( self, outerInstance ):
             self.outer = outerInstance
 
-        def get_for_self( self ):
-            #TODO this is broken
+        def get( self, startTime:int, endTime:int ):
+            params = {
+                _APIkeywords._PARAM_START_TIME: startTime,
+                _APIkeywords._PARAM_END_TIME: endTime
+            }
             response = self.outer._send_http_get_request(
                 type=_APIkeywords._TYPE_USER,
-                subtype=_APIkeywords._SUBTYPE_ANALYTICS )
+                subtype=_APIkeywords._SUBTYPE_ANALYTICS,
+                params=params )
             return response
 
 
@@ -697,7 +703,7 @@ class SimPlurAPI:
         statusCode = response.status_code
         reason = response.reason
         elapsed = response.elapsed.total_seconds()
-        self._logger.info( '%s %s returned %d (%s) in %f seconds' % ( method, url, statusCode, reason, elapsed ) )
+        self._logger.info( '%s %s returned %d (%s) in %f seconds.' % ( method, url, statusCode, reason, elapsed ) )
 
     def _request_headers_http( self ):
         authToken = self._devAuthToken if self.config.is_in_development_mode else self._authToken
