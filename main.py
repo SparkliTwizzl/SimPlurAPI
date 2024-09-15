@@ -1,6 +1,7 @@
 import datetime
 import logging
 import os
+from datetime_extensions import unix_epoch_timestamp
 from simplurapi import simplurapi
 
 
@@ -16,8 +17,12 @@ if __name__ == "__main__":
         handlers=[
             logging.StreamHandler(),
             logging.FileHandler( logFile )])
+    logger = logging.getLogger( __name__ )
+
+    startTime = unix_epoch_timestamp( 2024, 8, 1 )
+    endTime = unix_epoch_timestamp( 2024, 9, 1 )
     api = simplurapi.SimPlurAPI()
     api.config.set_to_development_mode()
     api.config.set_connection_to_http()
-    test = api.automatedTimers.get_all()
-    print( test )
+    test = api.analytics.get( startTime, endTime )
+    logger.info( test.text )
