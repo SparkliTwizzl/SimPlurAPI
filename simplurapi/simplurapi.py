@@ -24,52 +24,6 @@ class _APIkeywords:
 
 
 class SimPlurAPI:
-    class _Config:
-        _useDevelopmentMode:bool = True
-        _useSocketConnection:bool = False
-
-
-        def __init__( self, outerInstance ):
-            self.outer = outerInstance
-
-
-        def is_in_development_mode( self ):
-            return self._useDevelopmentMode
-
-        def is_in_production_mode( self ):
-            return not self._useDevelopmentMode
-
-        def is_using_http_connection( self ):
-            return not self._useSocketConnection
-
-        def is_using_socket_connection( self ):
-            return self._useSocketConnection
-
-        def set_to_development_mode( self ):
-            self.outer._logger.info( 'Set %s to development mode.' % _MODULE_NAME )
-            self._useDevelopmentMode = True
-            if self.outer._devUserId is None or self.outer._devUserId == '':
-                raise ValueError( 'Dev user ID cannot be blank.' )
-            if self.outer._devAuthToken is None or self.outer._devAuthToken == '':
-                raise ValueError( 'Dev auth token cannot be blank.' )
-
-        def set_to_production_mode( self ):
-            self.outer._logger.info( 'Set %s to production mode.' % _MODULE_NAME )
-            self._useDevelopmentMode = False
-            if self.outer._userId is None or self.outer._userId == '':
-                raise ValueError( 'User ID cannot be blank.' )
-            if self.outer._authToken is None or self.outer._authToken == '':
-                raise ValueError( 'Auth token cannot be blank.' )
-
-        def set_connection_to_http( self ):
-            self.outer._logger.info( 'Set %s connection mode to HTTP.' % _MODULE_NAME )
-            self._useSocketConnection = False
-
-        def set_connection_to_socket( self ):
-            self.outer._logger.info( 'Set %s connection mode to WebSocket.' % _MODULE_NAME )
-            self._useSocketConnection = True
-
-
     class _Analytics:
         def __init__( self, outerInstance ):
             self.outer = outerInstance
@@ -253,6 +207,52 @@ class SimPlurAPI:
         def update( self, commentId:str, text:str, supportMarkdown:bool ):
             #TODO
             raise NotImplemented
+
+
+    class _Config:
+        _useDevelopmentMode:bool = True
+        _useSocketConnection:bool = False
+
+
+        def __init__( self, outerInstance ):
+            self.outer = outerInstance
+
+
+        def is_in_development_mode( self ):
+            return self._useDevelopmentMode
+
+        def is_in_production_mode( self ):
+            return not self._useDevelopmentMode
+
+        def is_using_http_connection( self ):
+            return not self._useSocketConnection
+
+        def is_using_socket_connection( self ):
+            return self._useSocketConnection
+
+        def set_to_development_mode( self ):
+            self.outer._logger.info( 'Set %s to development mode.' % _MODULE_NAME )
+            self._useDevelopmentMode = True
+            if self.outer._devUserId is None or self.outer._devUserId == '':
+                raise ValueError( 'Dev user ID cannot be blank.' )
+            if self.outer._devAuthToken is None or self.outer._devAuthToken == '':
+                raise ValueError( 'Dev auth token cannot be blank.' )
+
+        def set_to_production_mode( self ):
+            self.outer._logger.info( 'Set %s to production mode.' % _MODULE_NAME )
+            self._useDevelopmentMode = False
+            if self.outer._userId is None or self.outer._userId == '':
+                raise ValueError( 'User ID cannot be blank.' )
+            if self.outer._authToken is None or self.outer._authToken == '':
+                raise ValueError( 'Auth token cannot be blank.' )
+
+        def set_connection_to_http( self ):
+            self.outer._logger.info( 'Set %s to use HTTP connection.' % _MODULE_NAME )
+            self._useSocketConnection = False
+
+        def set_connection_to_socket( self ):
+            self.outer._logger.info( 'Set %s to use WebSocket connection.' % _MODULE_NAME )
+            self._useSocketConnection = True
 
 
     class _CustomFronts:
@@ -719,16 +719,16 @@ class SimPlurAPI:
             url = url[ slice( -1 ) ]
         return url
 
-    def _send_http_get_request( self, type:str, subtype:str = '', arg:str = '', params:dict = {}, body:dict = {} ):
+    def _send_http_get_request( self, type:str, subtype:str='', arg:str='', params:dict={}, body:dict={} ):
         return self._send_http_request( 'GET', type, subtype, arg, params, body )
 
-    def _send_http_patch_request( self, type:str, subtype:str = '', arg:str = '', params:dict = {}, body:dict = {} ):
+    def _send_http_patch_request( self, type:str, subtype:str='', arg:str='', params:dict={}, body:dict={} ):
         return self._send_http_request( 'PATCH', type, subtype, arg, params, body )
 
-    def _send_http_post_request( self, type:str, subtype:str = '', arg:str = '', params:dict = {}, body:dict = {} ):
+    def _send_http_post_request( self, type:str, subtype:str='', arg:str='', params:dict={}, body:dict={} ):
         return self._send_http_request( 'POST', type, subtype, arg, params, body )
 
-    def _send_http_delete_request( self, type:str, subtype:str = '', arg:str = '', params:dict = {}, body:dict = {} ):
+    def _send_http_delete_request( self, type:str, subtype:str='', arg:str='', params:dict={}, body:dict={} ):
         return self._send_http_request( 'DEL', type, subtype, arg, params, body )
 
     def _send_http_request( self, method:str, type:str, subtype:str, arg:str, params:dict, body:dict ):
