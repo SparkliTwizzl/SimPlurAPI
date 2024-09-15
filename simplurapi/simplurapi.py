@@ -29,15 +29,12 @@ class SimPlurAPI:
             self.outer = outerInstance
 
         def get( self, startTime:int, endTime:int ):
-            params = {
-                _APIkeywords._PARAM_START_TIME: startTime,
-                _APIkeywords._PARAM_END_TIME: endTime
-            }
-            response = self.outer._send_http_get_request(
-                type=_APIkeywords._TYPE_USER,
-                subtype=_APIkeywords._SUBTYPE_ANALYTICS,
-                params=params )
-            return response
+            return self.outer._send_http_get_request(
+                type = _APIkeywords._TYPE_USER,
+                subtype = _APIkeywords._SUBTYPE_ANALYTICS,
+                params = {
+                    _APIkeywords._PARAM_START_TIME: startTime,
+                    _APIkeywords._PARAM_END_TIME: endTime } )
 
 
     class _AutomatedTimers:
@@ -60,11 +57,10 @@ class SimPlurAPI:
             return self.get_all_for_system( self.outer.user_id() )
 
         def get_all_for_system( self, systemId:str ):
-            response = self.outer._send_http_get_request(
-                type=_APIkeywords._TYPE_TIMERS,
-                subtype=_APIkeywords._SUBTYPE_AUTOMATED,
-                arg=systemId )
-            return response
+            return self.outer._send_http_get_request(
+                type = _APIkeywords._TYPE_TIMERS,
+                subtype = _APIkeywords._SUBTYPE_AUTOMATED,
+                arg = systemId )
 
         def update( self, timerId:str, name:str, message:str, type:int, delayInHours:int ):
             #TODO
